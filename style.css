@@ -1,0 +1,16 @@
+body {
+  margin: 0px;
+}
+
+table tr td button {
+  padding: 9px;
+  margin: 0px;
+}
+
+table tr td {
+  padding: 0px;
+}
+
+.bgb {
+  background: black;
+}

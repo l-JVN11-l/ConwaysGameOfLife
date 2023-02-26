@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conway's Game of Life</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div id="gol"></div>
+  <button id="start" onclick="realGame()">Start Conway's Game Of Life</button>
+  <br />
+  <div id="gen"></div>
+  
+  <script>
+    let row = 25
+    let col = 25
+
+    const tbl = document.getElementById("gol")
+    let str = ""
+    let arr = new Array(row)
+    let cl = 0
+    let r = 1
+    let c = 1
+    let gen = 1
+
+    function initGame() {
+      const aliveDeath = (r, c, v) => {
+        arr[r-1][c-1] = v
+      }
+
+      for (let k = 0; k < arr.length; k++) {
+        arr[k] = new Array(col)
+        for (let l = 0; l < arr[k].length; l++) {
+          arr[k][l] = 0
+        }
+      }
+
+      for (let j = 0; j < row; j++) {
+        str = str + `<tr>`
+        for (let i = 0; i < col; i++) {
+          if (arr[j][i] == 1) {
+            str = str + `<td class='bgb'><button id='r${r}c${c}' onClick='handleClick(\"r${r}c${c}\")'></button></td>`
+          } else {
+            str = str + `<td><button id='r${r}c${c}' onClick='handleClick(\"r${r}c${c}\")'></button></td>`
+          }
+          c += 1
+        }    
+        str = str + "</tr>"
+        r += 1
+        c = 1
+      }
+
+
+
+    }
+
+    function handleClick(id){
+      let brokenstr = id.split("c")
+      brokenstr[0] = brokenstr[0].replace("r", "")
+
+      let num1 = parseInt(brokenstr[0]) - 1
+      let num2 = parseInt(brokenstr[1]) - 1
+      arr[num1][num2] == 1 ?
+        arr[num1][num2] = 0 :
+        arr[num1][num2] = 1
+
+      arr[num1][num2] == 1 ?
+        document.getElementById(id).style = "background: black;" :
+        document.getElementById(id).style = ""
+    }
+
+    function realGame() {
+      function die(r, c, id) {
+        arr[r][c] = 0
+        document.getElementById(id).style = ""
+      }
+
+      function alive(r, c, id) {
+        arr[r][c] = 1
+        document.getElementById(id).style = "background: black;"
+      }
+
+      for (let j = 0; j < row; j++) {
+        for (let k = 0; k < col; k++) {
+          let sum = 0
+          //Row on top
+          if (j-1 >= 0){
+            if (k-1 >= 0) {
+              sum += arr[j-1][k-1]
+            }
+            
+            sum += arr[j-1][k]
+
+            if (k+1 <= col-1) {
+              sum += arr[j-1][k+1]
+            }
+          } 
+          //Current Row
+          if (k-1 >= 0) {
+            sum += arr[j][k-1]
+          }
+
+          if (k+1 <= col-1) {
+            sum += arr[j][k+1]
+          }
+          //Bottom Row
+          if (j+1 <= row-1){
+
+            if (k-1 >= 0) {
+              sum += arr[j+1][k-1]
+            }
+            
+            sum += arr[j+1][k]
+
+            if (k+1 <= col-1) {
+              sum += arr[j+1][k+1]
+            }
+          }
+
+          if (sum <= 1 || sum >= 4) {
+            die(j, k, `r${j+1}c${k+1}`)
+          } else if (sum == 3) {
+            alive(j, k, `r${j+1}c${k+1}`)
+          }
+        }
+      }
+      document.getElementById("gen").innerHTML = `<p>Generation ${gen}</p>`
+
+      gen += 1
+    }
+
+    initGame()
+
+    str = "<table border='1'>" + str + "</table>"
+    tbl.innerHTML = str
+  </script>
+</body>
+
+</html>
